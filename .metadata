@@ -1,0 +1,25 @@
+# This file tracks properties of the Flutter build
+#
+# This information is used by Flutter tooling to assess capabilities and perform
+# version checks. This file should be version controlled and should not be
+# manually edited.
+
+version:
+  revision: "afbe4bbf4e11b6098a37ca42ce0c7de8b7b2e7d4"
+  channel: "stable"
+
+project_type: app
+
+# Tracks metadata for the flutter migrate command
+migration:
+  platforms:
+    - platform: android
+      create_revision: afbe4bbf4e11b6098a37ca42ce0c7de8b7b2e7d4
+      base_revision: afbe4bbf4e11b6098a37ca42ce0c7de8b7b2e7d4
+    - platform: linux
+      create_revision: afbe4bbf4e11b6098a37ca42ce0c7de8b7b2e7d4
+      base_revision: afbe4bbf4e11b6098a37ca42ce0c7de8b7b2e7d4
+
+  unmanaged_files:
+    - 'lib/main.dart'
+    - 'ios/Runner.xceruncodeSigningStyle'
