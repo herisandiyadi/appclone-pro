@@ -30,7 +30,7 @@ class AppSpacing {
 
 class AppTheme {
   static ThemeData dark() {
-    final base = ThemeData.dark(useMaterial3: true);
+    final base = ThemeData.dark();
     return base.copyWith(
       scaffoldBackgroundColor: AppColors.canvas,
       colorScheme: base.colorScheme.copyWith(
@@ -105,7 +105,7 @@ class AppTheme {
   }
 
   static ThemeData light() {
-    final base = ThemeData.light(useMaterial3: true);
+    final base = ThemeData.light();
     return base.copyWith(
       scaffoldBackgroundColor: const Color(0xFFF8FAFC),
       colorScheme: base.colorScheme.copyWith(
@@ -113,7 +113,6 @@ class AppTheme {
         secondary: const Color(0xFF0284C7),
         surface: Colors.white,
       ),
-      useMaterial3: true,
     );
   }
 }

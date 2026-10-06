@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/engine/cloning_engine.dart';
+import '../../core/engine/virtual_container.dart';
 import '../../core/notification/notification_handler.dart';
 import '../../core/security/security_manager.dart';
 import '../../data/model/clone_app.dart';

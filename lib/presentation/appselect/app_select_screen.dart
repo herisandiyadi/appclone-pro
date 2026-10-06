@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/di/providers.dart';
-import '../../core/engine/cloning_engine.dart';
 import '../../data/model/clone_app.dart';
 import '../../data/model/installed_app.dart';
 import '../../presentation/theme/app_theme.dart';
@@ -66,7 +65,7 @@ class _AppRow extends ConsumerWidget {
       ),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: AppColors.accent.withOpacity(0.12),
+          backgroundColor: AppColors.accent.withValues(alpha: 0.12),
           child: Icon(app.icon, color: AppColors.accent),
         ),
         title: Text(app.appName),
@@ -83,7 +82,7 @@ class _AppRow extends ConsumerWidget {
     final clone = CloneApp.create(
       packageName: app.packageName,
       displayName: '${app.appName} Clone',
-      appIconColor: AppColors.accent.value,
+      appIconColor: AppColors.accent.toARGB32(),
     );
     ref.read(clonesListProvider.notifier).addClone(clone);
     Navigator.of(context).push(

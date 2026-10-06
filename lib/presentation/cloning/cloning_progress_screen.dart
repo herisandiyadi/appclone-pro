@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/di/providers.dart';
 import '../../core/engine/cloning_engine.dart';
+import '../../core/engine/virtual_container.dart';
 import '../../data/model/clone_app.dart';
 import '../theme/app_theme.dart';
 
@@ -17,7 +18,6 @@ class CloningProgressScreen extends ConsumerStatefulWidget {
 class _CloningProgressScreenState extends ConsumerState<CloningProgressScreen> {
   double _progress = 0;
   String _message = 'Initializing...';
-  CloningStep _step = CloningStep.parsing;
   bool _done = false;
 
   @override
@@ -33,7 +33,6 @@ class _CloningProgressScreenState extends ConsumerState<CloningProgressScreen> {
         setState(() {
           _progress = event.percent;
           _message = event.message;
-          _step = event.step;
           _done = event.step == CloningStep.done;
         });
       }

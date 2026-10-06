@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/di/providers.dart';
-import '../../core/engine/cloning_engine.dart';
 import '../../data/model/clone_app.dart';
 import '../widgets/clone_card.dart';
 
@@ -151,7 +150,7 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.apps, size: 64, color: Theme.of(context).colorScheme.primary.withOpacity(0.4)),
+          Icon(Icons.apps, size: 64, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4)),
           const SizedBox(height: 16),
           Text('No clones yet', style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 8),

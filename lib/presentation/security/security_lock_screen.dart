@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../core/security/security_manager.dart';
-import '../data/model/clone_app.dart';
+import '../../core/security/security_manager.dart';
+import '../../data/model/clone_app.dart';
 
 /// Gate widget — forces PIN verification if the clone is locked.
 class SecurityLockScreen extends StatefulWidget {

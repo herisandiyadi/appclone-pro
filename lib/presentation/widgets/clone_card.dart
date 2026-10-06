@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/engine/engine_models.dart';
 import '../../data/model/clone_app.dart';
 
 class CloneCard extends StatelessWidget {
@@ -29,7 +28,7 @@ class CloneCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isRunning
-                ? theme.colorScheme.primary.withOpacity(0.5)
+                ? theme.colorScheme.primary.withValues(alpha: 0.5)
                 : theme.dividerColor,
           ),
         ),
@@ -41,7 +40,7 @@ class CloneCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 24,
-                  backgroundColor: Color(clone.appIconColor).withOpacity(0.18),
+                  backgroundColor: Color(clone.appIconColor).withValues(alpha: 0.18),
                   child: Icon(Icons.apps, color: Color(clone.appIconColor), size: 24),
                 ),
                 if (clone.locked)

@@ -7,7 +7,6 @@ import 'dart:async';
 import 'dart:math';
 
 import '../engine/engine_models.dart';
-import '../../data/model/clone_app.dart';
 
 enum CloneStatus { cloning, ready, running, error }
 

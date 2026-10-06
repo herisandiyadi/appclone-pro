@@ -37,7 +37,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: 'Dark Mode',
             trailing: Switch(
               value: themeMode == ThemeMode.dark,
-              activeColor: AppColors.accent,
+              activeThumbColor: AppColors.accent,
               onChanged: (v) => ref.read(themeModeProvider.notifier).state =
                   v ? ThemeMode.dark : ThemeMode.light,
             ),
@@ -54,7 +54,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: 'Biometric Lock',
             trailing: Switch(
               value: security.biometricEnabled,
-              activeColor: AppColors.accent,
+              activeThumbColor: AppColors.accent,
               onChanged: (v) {
                 security.setBiometric(v);
                 setState(() {});
