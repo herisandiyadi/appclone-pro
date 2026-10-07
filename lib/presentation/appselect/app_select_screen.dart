@@ -63,16 +63,19 @@ class _AppRow extends ConsumerWidget {
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.border),
       ),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: AppColors.accent.withValues(alpha: 0.12),
-          child: Icon(app.icon, color: AppColors.accent),
-        ),
-        title: Text(app.appName),
-        subtitle: Text(_fmtSize(app.sizeBytes), style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-        trailing: FilledButton.tonal(
-          onPressed: app.isClonable ? () => _startClone(context, ref) : null,
-          child: const Text('Clone'),
+      child: Material(
+        type: MaterialType.transparency,
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: AppColors.accent.withValues(alpha: 0.12),
+            child: Icon(app.icon, color: AppColors.accent),
+          ),
+          title: Text(app.appName),
+          subtitle: Text(_fmtSize(app.sizeBytes), style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+          trailing: FilledButton.tonal(
+            onPressed: app.isClonable ? () => _startClone(context, ref) : null,
+            child: const Text('Clone'),
+          ),
         ),
       ),
     );

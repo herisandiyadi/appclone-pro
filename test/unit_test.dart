@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/core/engine/cloning_engine.dart';
-import '../lib/core/engine/engine_models.dart';
-import '../lib/core/engine/virtual_container.dart';
-import '../lib/core/security/security_manager.dart';
-import '../lib/data/model/clone_app.dart';
+import 'package:appclone_pro/core/engine/cloning_engine.dart';
+import 'package:appclone_pro/core/engine/engine_models.dart';
+import 'package:appclone_pro/core/engine/virtual_container.dart';
+import 'package:appclone_pro/core/security/security_manager.dart';
+import 'package:appclone_pro/data/model/clone_app.dart';
 
 void main() {
   group('CloneApp model', () {

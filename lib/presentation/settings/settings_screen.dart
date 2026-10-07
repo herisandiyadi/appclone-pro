@@ -154,11 +154,14 @@ class _SettingsTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(color: AppColors.border),
         ),
-        child: ListTile(
-          leading: Icon(icon, color: AppColors.textSecondary),
-          title: Text(title),
-          trailing: trailing,
-          onTap: onTap,
+        child: Material(
+          type: MaterialType.transparency,
+          child: ListTile(
+            leading: Icon(icon, color: AppColors.textSecondary),
+            title: Text(title),
+            trailing: trailing,
+            onTap: onTap,
+          ),
         ),
       );
 }
