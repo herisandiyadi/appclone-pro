@@ -15,6 +15,9 @@ dependencies:
   uuid: ^4.5.1
   crypto: ^3.0.6
   meta: ^1.16.0
+  local_auth: ^2.3.0
+  encrypt: ^5.0.3
+  webview_flutter: ^4.10.0
 
 dev_dependencies:
   flutter_test:

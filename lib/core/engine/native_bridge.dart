@@ -47,6 +47,26 @@ class NativeBridge {
     }
   }
 
+  /// Get real storage bytes for a clone container.
+  Future<int> getContainerStorage(String cloneId) async {
+    try {
+      final int? bytes = await _channel.invokeMethod('getContainerStorage', {'cloneId': cloneId});
+      return bytes ?? 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  /// Clear container data directories.
+  Future<bool> clearContainer(String cloneId) async {
+    try {
+      final bool? res = await _channel.invokeMethod('clearContainer', {'cloneId': cloneId});
+      return res ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   static const _fallbackApps = [
     InstalledApp(packageName: 'com.whatsapp', appName: 'WhatsApp', icon: Icons.chat, sizeBytes: 85 * 1024 * 1024),
     InstalledApp(packageName: 'com.instagram.android', appName: 'Instagram', icon: Icons.camera_alt, sizeBytes: 140 * 1024 * 1024),

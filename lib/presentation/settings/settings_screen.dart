@@ -55,7 +55,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: Switch(
               value: security.biometricEnabled,
               activeThumbColor: AppColors.accent,
-              onChanged: (v) {
+              onChanged: (v) async {
+                if (v) {
+                  final ok = await security.authenticateBiometric(
+                      reason: 'Enable biometric lock for AppClone Pro');
+                  if (!ok) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Biometric not enrolled or failed.')));
+                    }
+                    return;
+                  }
+                }
                 security.setBiometric(v);
                 setState(() {});
               },

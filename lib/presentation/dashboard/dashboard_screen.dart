@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/di/providers.dart';
 import '../../data/model/clone_app.dart';
 import '../cloning/clone_app_window_screen.dart';
+import '../security/isolated_session_screen.dart';
 import '../widgets/clone_card.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -52,8 +53,49 @@ class DashboardScreen extends ConsumerWidget {
       );
       return;
     }
+    // Offer launch mode: isolated second-account web session vs native app task
+    final mode = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Theme.of(context).cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text('How to open?', style: TextStyle(fontWeight: FontWeight.w600)),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person_add_alt_1, color: Color(0xFF00F0FF)),
+              title: const Text('Account 2 — Isolated Session'),
+              subtitle: const Text('Separate login profile (second account)'),
+              onTap: () => Navigator.pop(ctx, 'isolated'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.open_in_new),
+              title: const Text('Open Native App'),
+              subtitle: const Text('Launch the installed app'),
+              onTap: () => Navigator.pop(ctx, 'native'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (mode == null || !context.mounted) return;
+
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
+
+    if (mode == 'isolated') {
+      navigator.push(
+        MaterialPageRoute(builder: (_) => IsolatedSessionScreen(clone: clone)),
+      );
+      return;
+    }
+
     final bridge = ref.read(nativeBridgeProvider);
     final engine = ref.read(cloningEngineProvider);
 
@@ -117,6 +159,22 @@ class DashboardScreen extends ConsumerWidget {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: const Text('Rename'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showRenameDialog(context, ref, clone);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.color_lens_outlined),
+              title: const Text('Change Icon'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showChangeIconDialog(context, ref, clone);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.delete_outline, color: Color(0xFFEF4444)),
               title: const Text('Delete', style: TextStyle(color: Color(0xFFEF4444))),
               onTap: () {
@@ -125,6 +183,61 @@ class DashboardScreen extends ConsumerWidget {
                 Navigator.pop(ctx);
               },
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showRenameDialog(BuildContext context, WidgetRef ref, CloneApp clone) {
+    final controller = TextEditingController(text: clone.displayName);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Rename Clone'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(hintText: 'New name'),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () {
+              if (controller.text.trim().isNotEmpty) {
+                ref.read(clonesListProvider.notifier).renameClone(clone.id, controller.text.trim());
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showChangeIconDialog(BuildContext context, WidgetRef ref, CloneApp clone) {
+    const colors = [
+      Color(0xFF00F0FF), Color(0xFFEF4444), Color(0xFF10B981),
+      Color(0xFFF59E0B), Color(0xFF8B5CF6), Color(0xFFEC4899),
+      Color(0xFF3B82F6), Color(0xFF64748B),
+    ];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Change Icon Color'),
+        content: Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            for (final color in colors)
+              GestureDetector(
+                onTap: () {
+                  ref.read(clonesListProvider.notifier).changeIconColor(clone.id, color.toARGB32());
+                  Navigator.pop(ctx);
+                },
+                child: CircleAvatar(backgroundColor: color, radius: 20),
+              ),
           ],
         ),
       ),

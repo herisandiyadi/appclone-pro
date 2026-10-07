@@ -10,6 +10,12 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
 
     private val channelName = "appclone_pro/native"
+    private lateinit var containerManager: VirtualContainerManager
+
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+        super.onCreate(savedInstanceState)
+        containerManager = VirtualContainerManager(applicationContext)
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -18,6 +24,8 @@ class MainActivity : FlutterActivity() {
                 when (call.method) {
                     "getInstalledApps" -> handleGetInstalledApps(result)
                     "launchApp" -> handleLaunchApp(call, result)
+                    "getContainerStorage" -> handleGetContainerStorage(call, result)
+                    "clearContainer" -> handleClearContainer(call, result)
                     else -> result.notImplemented()
                 }
             }
@@ -41,6 +49,36 @@ class MainActivity : FlutterActivity() {
                 apps.add(mapOf("packageName" to pkg, "appName" to label))
             }
             result.success(apps)
+        } catch (e: Exception) {
+            result.error("UNAVAILABLE", e.message, null)
+        }
+    }
+
+    /// Returns the real storage bytes used by a virtual container on disk.
+    private fun handleGetContainerStorage(call: io.flutter.plugin.common.MethodCall, result: MethodChannel.Result) {
+        val cloneId = call.argument<String>("cloneId")
+        if (cloneId == null) {
+            result.error("BAD_ARGS", "cloneId is required", null)
+            return
+        }
+        try {
+            val bytes = containerManager.calculateStorageBytes(cloneId)
+            result.success(bytes)
+        } catch (e: Exception) {
+            result.error("UNAVAILABLE", e.message, null)
+        }
+    }
+
+    /// Clears a virtual container's data directories.
+    private fun handleClearContainer(call: io.flutter.plugin.common.MethodCall, result: MethodChannel.Result) {
+        val cloneId = call.argument<String>("cloneId")
+        if (cloneId == null) {
+            result.error("BAD_ARGS", "cloneId is required", null)
+            return
+        }
+        try {
+            val cleared = containerManager.clearContainer(cloneId)
+            result.success(cleared)
         } catch (e: Exception) {
             result.error("UNAVAILABLE", e.message, null)
         }
