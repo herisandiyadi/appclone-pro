@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/di/providers.dart';
 import '../../data/model/clone_app.dart';
 import '../../data/model/installed_app.dart';
-import '../../presentation/theme/app_theme.dart';
+import '../theme/app_theme.dart';
 import '../cloning/cloning_progress_screen.dart';
 
 class AppSelectScreen extends ConsumerStatefulWidget {
@@ -19,9 +19,7 @@ class _AppSelectScreenState extends ConsumerState<AppSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final apps = ref.watch(installedAppsProvider)
-        .where((a) => a.appName.toLowerCase().contains(_query.toLowerCase()))
-        .toList();
+    final appsAsync = ref.watch(installedAppsProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Clone an App')),
@@ -38,11 +36,25 @@ class _AppSelectScreenState extends ConsumerState<AppSelectScreen> {
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: apps.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (ctx, i) => _AppRow(app: apps[i]),
+            child: appsAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(
+                child: Text('Failed to load installed apps: $e'),
+              ),
+              data: (apps) {
+                final filtered = apps
+                    .where((a) => a.appName.toLowerCase().contains(_query.toLowerCase()))
+                    .toList();
+                if (filtered.isEmpty) {
+                  return const Center(child: Text('No apps found.'));
+                }
+                return ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: filtered.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (ctx, i) => _AppRow(app: filtered[i]),
+                );
+              },
             ),
           ),
         ],
@@ -71,7 +83,8 @@ class _AppRow extends ConsumerWidget {
             child: Icon(app.icon, color: AppColors.accent),
           ),
           title: Text(app.appName),
-          subtitle: Text(_fmtSize(app.sizeBytes), style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+          subtitle: Text(app.packageName,
+              style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
           trailing: FilledButton.tonal(
             onPressed: app.isClonable ? () => _startClone(context, ref) : null,
             child: const Text('Clone'),
@@ -91,10 +104,5 @@ class _AppRow extends ConsumerWidget {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => CloningProgressScreen(clone: clone)),
     );
-  }
-
-  String _fmtSize(int bytes) {
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(0)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(0)} MB';
   }
 }

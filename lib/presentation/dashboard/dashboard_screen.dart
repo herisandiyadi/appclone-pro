@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/di/providers.dart';
 import '../../data/model/clone_app.dart';
+import '../cloning/clone_app_window_screen.dart';
 import '../widgets/clone_card.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -51,16 +52,40 @@ class DashboardScreen extends ConsumerWidget {
       );
       return;
     }
-    final engine = ref.read(cloningEngineProvider);
     final messenger = ScaffoldMessenger.of(context);
-    final process = await engine.launchClone(clone.id);
-    if (process != null) {
+    final navigator = Navigator.of(context);
+    final bridge = ref.read(nativeBridgeProvider);
+    final engine = ref.read(cloningEngineProvider);
+
+    // Try to launch the REAL installed app via Android Intent
+    final launched = await bridge.launchApp(clone.packageName);
+    if (!context.mounted) return;
+
+    if (launched) {
       messenger.showSnackBar(
         SnackBar(
-          content: Text('Launching ${clone.displayName} (pid ${process.pid}, ${process.memoryMb}MB)'),
+          content: Text('Opened ${clone.displayName}'),
           backgroundColor: const Color(0xFF10B981),
         ),
       );
+    } else {
+      // App not installed on device: open the instance window so user gets clear feedback
+      final process = await engine.launchClone(clone);
+      if (!context.mounted) return;
+      if (process != null) {
+        navigator.push(
+          MaterialPageRoute(
+            builder: (_) => CloneAppWindowScreen(clone: clone, process: process),
+          ),
+        );
+      } else {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('${clone.displayName} is not installed on this device.'),
+            backgroundColor: const Color(0xFFEF4444),
+          ),
+        );
+      }
     }
   }
 

@@ -82,13 +82,16 @@ void main() {
       expect(steps.first, equals(CloningStep.parsing));
     });
 
-    test('isRunning false before launch', () {
+    test('launchClone succeeds and updates isRunning', () async {
       final clone = CloneApp.create(
         packageName: 'com.pkg',
         displayName: 'Test',
         appIconColor: 0xFF0000,
       );
       expect(engine.isRunning(clone.id), isFalse);
+      final process = await engine.launchClone(clone);
+      expect(process, isNotNull);
+      expect(engine.isRunning(clone.id), isTrue);
     });
   });
 

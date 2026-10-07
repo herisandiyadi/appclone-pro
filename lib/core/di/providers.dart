@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/engine/cloning_engine.dart';
+import '../../core/engine/native_bridge.dart';
 import '../../core/engine/virtual_container.dart';
 import '../../core/notification/notification_handler.dart';
 import '../../core/security/security_manager.dart';
@@ -9,19 +10,14 @@ import '../../data/model/clone_app.dart';
 import '../../data/model/installed_app.dart';
 
 final cloningEngineProvider = Provider((ref) => CloningEngine.instance);
+final nativeBridgeProvider = Provider((ref) => NativeBridge.instance);
 final notificationHandlerProvider = Provider((ref) => NotificationHandler.instance);
 final securityManagerProvider = Provider((ref) => SecurityManager.instance);
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.dark);
 
-final installedAppsProvider = Provider<List<InstalledApp>>((ref) {
-  return const [
-    InstalledApp(packageName: 'com.whatsapp', appName: 'WhatsApp', icon: Icons.chat, sizeBytes: 85 * 1024 * 1024),
-    InstalledApp(packageName: 'com.instagram.android', appName: 'Instagram', icon: Icons.camera_alt, sizeBytes: 140 * 1024 * 1024),
-    InstalledApp(packageName: 'com.facebook.katana', appName: 'Facebook', icon: Icons.facebook, sizeBytes: 180 * 1024 * 1024),
-    InstalledApp(packageName: 'com.zhiliaoapp.musically', appName: 'TikTok', icon: Icons.video_collection, sizeBytes: 195 * 1024 * 1024),
-    InstalledApp(packageName: 'com.telegram.messenger', appName: 'Telegram', icon: Icons.send, sizeBytes: 95 * 1024 * 1024),
-  ];
+final installedAppsProvider = FutureProvider<List<InstalledApp>>((ref) async {
+  return ref.watch(nativeBridgeProvider).getInstalledApps();
 });
 
 final clonesListProvider = StateNotifierProvider<ClonesNotifier, List<CloneApp>>((ref) {

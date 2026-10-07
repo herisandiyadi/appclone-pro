@@ -48,12 +48,14 @@ class CloningEngine {
     yield const CloneProgress(step: CloningStep.done, percent: 1.0, message: 'Clone ready.');
   }
 
-  /// Launch an existing clone.
-  Future<VirtualProcess?> launchClone(String cloneId) async {
-    final container = _containers[cloneId];
-    if (container == null) return null;
+  /// Launch an existing clone. Auto-registers a container when missing
+  /// (simulation layer: containers are in-memory, lost on restart).
+  Future<VirtualProcess?> launchClone(CloneApp clone) async {
+    final container =
+        _containers[clone.id] ?? VirtualContainer(cloneId: clone.id, packageName: clone.packageName);
+    _containers[clone.id] = container;
     final process = await container.launch();
-    _processes[cloneId] = process;
+    _processes[clone.id] = process;
     return process;
   }
 
